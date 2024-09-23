@@ -1,53 +1,106 @@
 import { useQuery } from '@tanstack/react-query'
 import { createFileRoute } from '@tanstack/react-router'
-import { useState, ReactElement, JSXElementConstructor, ReactNode, ReactPortal } from 'react'
+import {ColumnDef,flexRender,getCoreRowModel,useReactTable,} from '@tanstack/react-table'
 
 export const Route = createFileRoute('/')({
   component: Index,
 })
 
-export type ContactType = {
-  id: string
-  name: string
-  email: string
-  phone: string
-}
+// Define ContactType
+type ContactType = {
+  id: string;
+  name: string;
+  email: string;
+  phone: string;
+};
+
+// Define columns for the table
+const columns: ColumnDef<ContactType>[] = [
+  {
+    accessorKey: 'id',
+    header: 'ID',
+  },
+  {
+    accessorKey: 'name',
+    header: 'Name',
+  },
+  {
+    accessorKey: 'email',
+    header: 'Email',
+  },
+  {
+    accessorKey: 'phone',
+    header: 'Phone',
+  },
+];
 
 function Index() {
+  // Fetch contacts data
   const { isPending, error, data, isFetching } = useQuery({
-    queryKey: ['repoData'],
+    queryKey: ['getAllContacts'],
     queryFn: async () => {
-      const response = await fetch(
-        'http://localhost:3000/contacts',
-      )
-      return await response.json();
-    },
-  })
+      const response = await fetch('http://localhost:3000/contacts');
+      const data = await response.json();
 
+      // Map the fetched data to ContactType
+      const mappedData: ContactType[] = data.contacts.map((item: any) => ({
+        id: item.id,
+        name: item.name,
+        email: item.email,
+        phone: item.phone,
+      }));
+
+      return mappedData;
+    },
+  });
+
+  // Create a react-table
+  const table = useReactTable({
+    data: data || [],
+    columns,
+    getCoreRowModel: getCoreRowModel(),
+  });
+
+  // Loading and error handling
   if (isPending) return (
-    <div>
-      Loading...
-    </div>
+  <div>Loading table...</div>
+)
+  if (error) return (
+  <div>Error: {error.message}</div>
+)
+  if (isFetching) return (
+    <div>Updating table...</div>
   )
 
-  if (error) {
-    console.log(data);
-    return (
-      <div>
-        'An error has occurred: ' + {error.message}
-      </div>
-    )
-  }
-  
   return (
     <div>
-        {data.contacts.map((contact:ContactType)=>{
-          return (
-            <div key={contact.id}>
-              <p><strong>{contact.id}</strong>: {contact.name} Email: {contact.email} </p>
-            </div>
-          )
-        })}
+      <table>
+        <thead>
+          {table.getHeaderGroups().map((headerGroup) => (
+            <tr key={headerGroup.id}>
+              {headerGroup.headers.map((header) => (
+                <th key={header.id}>
+                  {flexRender(
+                    header.column.columnDef.header,
+                    header.getContext()
+                  )}
+                </th>
+              ))}
+            </tr>
+          ))}
+        </thead>
+        <tbody>
+          {table.getRowModel().rows.map((row) => (
+            <tr key={row.id}>
+              {row.getVisibleCells().map((cell) => (
+                <td key={cell.id}>
+                  {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                </td>
+              ))}
+            </tr>
+          ))}
+        </tbody>
+      </table>
     </div>
   );
 }

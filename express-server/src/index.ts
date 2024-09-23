@@ -6,6 +6,7 @@ const port = 3000;
 var jsonFile = require("../db.json");
 
 app.get('/contacts', (req: Request, res: Response) => {
+  res.set('Access-Control-Allow-Origin', '*');
     res.json(jsonFile);
   });
 
