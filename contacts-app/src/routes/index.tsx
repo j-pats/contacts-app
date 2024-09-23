@@ -1,24 +1,25 @@
 import { useQuery } from '@tanstack/react-query'
-import { createFileRoute } from '@tanstack/react-router'
+import { createFileRoute, Link } from '@tanstack/react-router'
 import {ColumnDef,flexRender,getCoreRowModel,useReactTable,} from '@tanstack/react-table'
+import { ContactType } from '../contactType'
 
 export const Route = createFileRoute('/')({
   component: Index,
 })
-
-// Define ContactType
-type ContactType = {
-  id: string;
-  name: string;
-  email: string;
-  phone: string;
-};
 
 // Define columns for the table
 const columns: ColumnDef<ContactType>[] = [
   {
     accessorKey: 'id',
     header: 'ID',
+    cell: (props) => {
+      const value = props.getValue() as string;
+      return (
+        <div>
+          <Link to={`/${value}`}>{value}</Link>
+        </div>
+    )
+    }
   },
   {
     accessorKey: 'name',
@@ -49,6 +50,15 @@ function Index() {
         email: item.email,
         phone: item.phone,
       }));
+
+      // test with invalid contact
+      const invalidContact: ContactType = {
+        id: "55",
+        name: "Josh Nobody",
+        email: "N/A",
+        phone: "(none)"
+    }
+      mappedData.push(invalidContact)
 
       return mappedData;
     },
@@ -94,7 +104,9 @@ function Index() {
             <tr key={row.id}>
               {row.getVisibleCells().map((cell) => (
                 <td key={cell.id}>
-                  {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                  {
+                  flexRender(cell.column.columnDef.cell, cell.getContext())
+                  }
                 </td>
               ))}
             </tr>
