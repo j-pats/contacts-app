@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query'
-import { createFileRoute, useParams } from '@tanstack/react-router'
+import { createFileRoute, useParams, useNavigate } from '@tanstack/react-router'
 import type { ContactType } from '../contactType'
 import { useState } from 'react'
 import "../Index.css"
@@ -12,6 +12,7 @@ export const Route = createFileRoute('/$contactId')({
 
 // ContactComponent used for rendering Focus page
 function ContactComponent() {
+  const navigate = useNavigate()
   // isChanged state used to enable/disable update button
   const [isChanged, setIsChanged] = useState(false)
 
@@ -63,7 +64,7 @@ function ContactComponent() {
         throw new Error(`Error: ${response.statusText}`);
       } else {
         // Go back to contacts home
-        window.location.assign("http://localhost:5173")
+        navigate({to:"/"});
       }
     }
   })
