@@ -8,21 +8,20 @@ export const Route = createFileRoute('/$contactId')({
 })
 
 
-// ContactComponent
+// ContactComponent used for rendering Focus page
 function ContactComponent() {
     // get contactId parameter from URL
     const contactId = useParams({
-         from: '/$contactId',
-          select: (params) => params.contactId,
-         })
+      from: '/$contactId',
+      select: (params) => params.contactId,
+    })
   //console.log(contactId) // Check if contact ID is being logged right
 
   // Use contactId in the queryKey and the fetch URL
   const fetchContact = useQuery({
     queryKey: [`getContactId=${contactId}`],
     queryFn: async () => {
-      const response = await fetch(
-        `http://localhost:3000/${contactId}`,
+      const response = await fetch(`http://localhost:3000/${contactId}`,
       )
       if (response.status == 500) {
         throw new Error('Contact does not exist')
@@ -51,6 +50,20 @@ function ContactComponent() {
   // Render the contact details
   const contact = fetchContact.data;
 
+  // deletes contact and stores response
+  const deleteContact=((id:string)=>{
+    // Show confirmation window
+    if(window.confirm("Are you sure?")){
+      // make delete api call
+      fetch(`http://localhost:3000/${id}`,
+        {method:'DELETE'}
+      ).then(()=>{
+        // Go back to contacts home
+        window.location.assign("http://localhost:5173")
+      })
+    }
+  })
+
   return (
     <div>
       <h1>Contact Details for {contactId}</h1>
@@ -59,6 +72,9 @@ function ContactComponent() {
           <p>Name: {contact.name}</p>
           <p>Email: {contact.email}</p>
           <p>Phone: {contact.phone}</p>
+          <button onClick={() => deleteContact(contactId)}>
+            Delete
+      </button>
         </div>
       )}
     </div>

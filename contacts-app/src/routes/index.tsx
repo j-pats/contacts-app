@@ -44,7 +44,9 @@ function Index() {
       const data = await response.json();
 
       // Map the fetched data to ContactType
-      const mappedData: ContactType[] = data.contacts.map((item: any) => ({
+      const mappedData: ContactType[] = data.contacts
+      .filter((item: any) => item !== null && item !== undefined)
+      .map((item: any) => ({
         id: item.id,
         name: item.name,
         email: item.email,
@@ -52,13 +54,13 @@ function Index() {
       }));
 
       // test with invalid contact
-      const invalidContact: ContactType = {
-        id: "55",
-        name: "Josh Nobody",
-        email: "N/A",
-        phone: "(none)"
-    }
-      mappedData.push(invalidContact)
+    //   const invalidContact: ContactType = {
+    //     id: "55",
+    //     name: "Josh Nobody",
+    //     email: "N/A",
+    //     phone: "(none)"
+    // }
+    //   mappedData.push(invalidContact)
 
       return mappedData;
     },
