@@ -70,7 +70,7 @@ function ContactComponent() {
   })
 
   // Initialize JSON data object for sending PUTs data
-  const updateData = {"id":"",
+  const updateData = {"id":contactId,
     "name":"",
     "email":"",
     "phone":""
