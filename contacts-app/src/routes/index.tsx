@@ -3,11 +3,12 @@ import { createFileRoute, Link } from '@tanstack/react-router'
 import {ColumnDef,flexRender,getCoreRowModel,useReactTable,} from '@tanstack/react-table'
 import { ContactType } from '../contactType'
 
+// Route setup
 export const Route = createFileRoute('/')({
   component: Index,
 })
 
-// Define columns for the table
+// Define columns for the table, with IID being a link to the focus page
 const columns: ColumnDef<ContactType>[] = [
   {
     accessorKey: 'id',
@@ -43,7 +44,7 @@ function Index() {
       const response = await fetch('http://localhost:3000/contacts');
       const data = await response.json();
 
-      // Map the fetched data to ContactType
+      // Map the fetched data to ContactType, filter null and undefined entries
       const mappedData: ContactType[] = data.contacts
       .filter((item: any) => item !== null && item !== undefined)
       .map((item: any) => ({
@@ -53,7 +54,7 @@ function Index() {
         phone: item.phone,
       }));
 
-      // test with invalid contact
+      // Uncomment below to add extra contact that does not have a DB entry
     //   const invalidContact: ContactType = {
     //     id: "55",
     //     name: "Josh Nobody",

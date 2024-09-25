@@ -1,6 +1,7 @@
 import { useQuery } from '@tanstack/react-query'
 import { createFileRoute, useParams } from '@tanstack/react-router'
 import type { ContactType } from '../contactType'
+import { useState } from 'react'
 
 // Route setup
 export const Route = createFileRoute('/$contactId')({
@@ -10,12 +11,14 @@ export const Route = createFileRoute('/$contactId')({
 
 // ContactComponent used for rendering Focus page
 function ContactComponent() {
+  // isChanged state used to enable/disable update button
+  const [isChanged, setIsChanged] = useState(false)
+
     // get contactId parameter from URL
     const contactId = useParams({
       from: '/$contactId',
       select: (params) => params.contactId,
     })
-  //console.log(contactId) // Check if contact ID is being logged right
 
   // Use contactId in the queryKey and the fetch URL
   const fetchContact = useQuery({
@@ -27,9 +30,8 @@ function ContactComponent() {
         throw new Error('Contact does not exist')
       }
       const data = await response.json()
-      console.log(data)
 
-      // Create ContactType object from received json data
+    // Create ContactType object from received json data
     const mappedContact: ContactType = {
           id: data.id,
           name: data.name,
@@ -37,44 +39,112 @@ function ContactComponent() {
           phone: data.phone
       }
       return mappedContact;
-
-      
     },
   })
-
   // Loading and error handling
   if (fetchContact.isLoading) return <div>Loading contact...</div>
   if (fetchContact.error) return <div>Error: {fetchContact.error.message}</div>
   if (fetchContact.isFetching) return <div>Updating contact...</div>
 
-  // Render the contact details
+  // Save received contact data
   const contact = fetchContact.data;
 
   // deletes contact and stores response
-  const deleteContact=((id:string)=>{
+  const deleteContact=(async (id:string)=>{
     // Show confirmation window
-    if(window.confirm("Are you sure?")){
+    if(window.confirm("Are you sure you want to delete this contact?")){
       // make delete api call
-      fetch(`http://localhost:3000/${id}`,
+      const response = await fetch(`http://localhost:3000/${id}`,
         {method:'DELETE'}
-      ).then(()=>{
+      )
+
+      if (!response.ok) {
+        throw new Error(`Error: ${response.statusText}`);
+      } else {
         // Go back to contacts home
         window.location.assign("http://localhost:5173")
-      })
+      }
     }
   })
+
+  // Initialize JSON data object for sending PUTs data
+  const updateData = {"id":"",
+    "name":"",
+    "email":"",
+    "phone":""
+  };
+
+
+  // deletes contact and stores response
+  const updateContact=(async (id:string)=>{
+       // Define the request options for the PUT
+   const requestOptions = {
+    method: "PUT",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(updateData)
+  };
+    const response = await fetch(`http://localhost:3000/${id}`,
+      requestOptions,
+    )
+    
+    if (!response.ok) {
+      throw new Error(`Error: ${response.statusText}`);
+    } else {
+      // Set useState hook to disable Update button and force Component rerender
+      setIsChanged(false)
+    }
+  })
+
+  const updateIsChanged=(() => {
+    console.log("Textfield was changed")
+    // logic for enabling/disabling the update contact information button
+    updateData.name = (document.getElementById("nameInput") as HTMLInputElement)?.value;
+    updateData.email = (document.getElementById("emailInput") as HTMLInputElement)?.value;
+    updateData.phone = (document.getElementById("phoneInput") as HTMLInputElement)?.value;
+    // Set is changed value based on the status of the text input boxes
+    // Changed = false if any field is empty, or if all fields match
+    // the original field values
+    setIsChanged(((updateData.name != null && updateData.name !== "")? true:false &&
+      (updateData.email != null && updateData.email !== "")? true:false &&
+      (updateData.phone != null && updateData.phone !== "")? true:false)
+      &&
+      (updateData.name !== contact?.name ||
+        updateData.email !== contact?.email ||
+        updateData.phone !== contact?.phone
+      )
+    )
+
+  })
+
+  
 
   return (
     <div>
       <h1>Contact Details for {contactId}</h1>
       {contact && (
         <div>
-          <p>Name: {contact.name}</p>
-          <p>Email: {contact.email}</p>
-          <p>Phone: {contact.phone}</p>
+          <p>
+            Name: <input id="nameInput" type="text" defaultValue={contact.name} onChange={() => {
+            updateIsChanged();
+            }}/>
+          </p>
+          <p>
+            Email Address: <input id="emailInput" type="text" defaultValue={contact.email} onChange={() => {
+            updateIsChanged();
+            }}/>
+          </p>
+          <p>
+            Phone Number: <input id="phoneInput" type="text" defaultValue={contact.phone} onChange={() => {
+            updateIsChanged();
+            }}/>
+          </p>
           <button onClick={() => deleteContact(contactId)}>
             Delete
-      </button>
+          </button>
+          <button id="focus-update-button" disabled={!isChanged} onClick={() => {
+            updateContact(contactId)
+            }}>Update
+          </button>
         </div>
       )}
     </div>
