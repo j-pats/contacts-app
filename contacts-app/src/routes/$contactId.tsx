@@ -2,6 +2,7 @@ import { useQuery } from '@tanstack/react-query'
 import { createFileRoute, useParams } from '@tanstack/react-router'
 import type { ContactType } from '../contactType'
 import { useState } from 'react'
+import "../Index.css"
 
 // Route setup
 export const Route = createFileRoute('/$contactId')({
@@ -119,34 +120,35 @@ function ContactComponent() {
   
 
   return (
+<div>
+  <h3>Contact (Id:{contactId})</h3>
+  {contact && (
     <div>
-      <h1>Contact Details for {contactId}</h1>
-      {contact && (
-        <div>
-          <p>
-            Name: <input id="nameInput" type="text" defaultValue={contact.name} onChange={() => {
-            updateIsChanged();
-            }}/>
-          </p>
-          <p>
-            Email Address: <input id="emailInput" type="text" defaultValue={contact.email} onChange={() => {
-            updateIsChanged();
-            }}/>
-          </p>
-          <p>
-            Phone Number: <input id="phoneInput" type="text" defaultValue={contact.phone} onChange={() => {
-            updateIsChanged();
-            }}/>
-          </p>
-          <button onClick={() => deleteContact(contactId)}>
-            Delete
-          </button>
-          <button id="focus-update-button" disabled={!isChanged} onClick={() => {
-            updateContact(contactId)
-            }}>Update
-          </button>
-        </div>
-      )}
+      <table>
+        <tbody>
+          <tr>
+            <td><label htmlFor="nameInput">Name:</label></td>
+            <td><input id="nameInput" type="text" defaultValue={contact.name} onChange={() => updateIsChanged()} /></td>
+          </tr>
+          <tr>
+            <td><label htmlFor="emailInput">Email Address:</label></td>
+            <td><input id="emailInput" type="text" defaultValue={contact.email} onChange={() => updateIsChanged()} /></td>
+          </tr>
+          <tr>
+            <td><label htmlFor="phoneInput">Phone Number:</label></td>
+            <td><input id="phoneInput" type="text" defaultValue={contact.phone} onChange={() => updateIsChanged()} /></td>
+          </tr>
+        </tbody>
+      </table>
+      <button className="delete-button" onClick={() => deleteContact(contactId)}>
+        Delete
+      </button>
+      <button className="focus-update-button" disabled={!isChanged} onClick={() => updateContact(contactId)}>
+        Update
+      </button>
     </div>
+  )}
+</div>
+
   )
 }

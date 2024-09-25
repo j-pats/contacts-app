@@ -11,16 +11,10 @@
 // Import Routes
 
 import { Route as rootRoute } from './routes/__root'
-import { Route as AboutImport } from './routes/about'
 import { Route as ContactIdImport } from './routes/$contactId'
 import { Route as IndexImport } from './routes/index'
 
 // Create/Update Routes
-
-const AboutRoute = AboutImport.update({
-  path: '/about',
-  getParentRoute: () => rootRoute,
-} as any)
 
 const ContactIdRoute = ContactIdImport.update({
   path: '/$contactId',
@@ -50,13 +44,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ContactIdImport
       parentRoute: typeof rootRoute
     }
-    '/about': {
-      id: '/about'
-      path: '/about'
-      fullPath: '/about'
-      preLoaderRoute: typeof AboutImport
-      parentRoute: typeof rootRoute
-    }
   }
 }
 
@@ -65,41 +52,36 @@ declare module '@tanstack/react-router' {
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/$contactId': typeof ContactIdRoute
-  '/about': typeof AboutRoute
 }
 
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/$contactId': typeof ContactIdRoute
-  '/about': typeof AboutRoute
 }
 
 export interface FileRoutesById {
   __root__: typeof rootRoute
   '/': typeof IndexRoute
   '/$contactId': typeof ContactIdRoute
-  '/about': typeof AboutRoute
 }
 
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/$contactId' | '/about'
+  fullPaths: '/' | '/$contactId'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/$contactId' | '/about'
-  id: '__root__' | '/' | '/$contactId' | '/about'
+  to: '/' | '/$contactId'
+  id: '__root__' | '/' | '/$contactId'
   fileRoutesById: FileRoutesById
 }
 
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   ContactIdRoute: typeof ContactIdRoute
-  AboutRoute: typeof AboutRoute
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   ContactIdRoute: ContactIdRoute,
-  AboutRoute: AboutRoute,
 }
 
 export const routeTree = rootRoute
@@ -115,8 +97,7 @@ export const routeTree = rootRoute
       "filePath": "__root.tsx",
       "children": [
         "/",
-        "/$contactId",
-        "/about"
+        "/$contactId"
       ]
     },
     "/": {
@@ -124,9 +105,6 @@ export const routeTree = rootRoute
     },
     "/$contactId": {
       "filePath": "$contactId.tsx"
-    },
-    "/about": {
-      "filePath": "about.tsx"
     }
   }
 }

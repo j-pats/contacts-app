@@ -1,0 +1,75 @@
+@import url('https://fonts.googleapis.com/css?family=Ubuntu');
+
+html {
+    font-family: 'Ubuntu', sans-serif;
+    font-size: 14px;
+    letter-spacing: 1px;
+    background-color: #e4e4e4;
+}
+  
+  table {
+    border: 5px solid lightgray;
+    background-color: #f2f3ef;
+  }
+  
+  tbody {
+    border-bottom: 1px solid lightgray;
+  }
+  
+  th {
+    border-bottom: 1px solid lightgray;
+    padding: 4px 8px;
+    letter-spacing: 2px;
+    font-style: normal;
+    font-size: 18px;
+  }
+
+  td {
+    border-left: 1px solid lightgray;
+    text-align: left;
+    text-indent: 5px;
+  }
+
+  h4 {
+    margin: 5px;
+  }
+
+  link {
+    margin-right: 10px; /* Adjust the space as needed */
+  }
+
+  .delete-button {
+    background-color: #aa0404;
+    border: none;
+    color: white;
+    padding: 10px 20px;
+    text-align: center;
+    display: inline-block;
+    margin-left: 10px;
+    margin-right: 10px;
+    margin-top: 20px;
+  }
+
+  .focus-update-button {
+    background-color: #04aa49;
+    border: none;
+    color: white;
+    padding: 10px 20px;
+    text-align: center;
+    display: inline-block;
+    margin-left: 10px;
+    margin-right: 10px;
+    margin-top: 20px;
+  }
+
+  .focus-update-button:disabled {
+    background-color: #a0a0a0;
+    border: none;
+    color: white;
+    padding: 10px 20px;
+    text-align: center;
+    display: inline-block;
+    margin-left: 10px;
+    margin-right: 10px;
+    margin-top: 20px;
+  }

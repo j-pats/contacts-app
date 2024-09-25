@@ -2,13 +2,14 @@ import { useQuery } from '@tanstack/react-query'
 import { createFileRoute, Link } from '@tanstack/react-router'
 import {ColumnDef,flexRender,getCoreRowModel,useReactTable,} from '@tanstack/react-table'
 import { ContactType } from '../contactType'
+import '../index.css'; 
 
 // Route setup
 export const Route = createFileRoute('/')({
   component: Index,
 })
 
-// Define columns for the table, with IID being a link to the focus page
+// Define columns for the table, with ID being a link to the focus page
 const columns: ColumnDef<ContactType>[] = [
   {
     accessorKey: 'id',
@@ -17,7 +18,7 @@ const columns: ColumnDef<ContactType>[] = [
       const value = props.getValue() as string;
       return (
         <div>
-          <Link to={`/${value}`}>{value}</Link>
+          <Link to={`/${value}`}>(Edit)</Link>    ID: {value}
         </div>
     )
     }
@@ -29,6 +30,14 @@ const columns: ColumnDef<ContactType>[] = [
   {
     accessorKey: 'email',
     header: 'Email',
+    cell: (props) => {
+      const value = props.getValue() as string;
+      return (
+        <div>
+          <Link to={`mailto:`+value}><i>{value}</i></Link>
+        </div>
+    )
+    }
   },
   {
     accessorKey: 'phone',
