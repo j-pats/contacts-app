@@ -2,7 +2,6 @@ import { useQuery } from '@tanstack/react-query'
 import { createFileRoute, Link } from '@tanstack/react-router'
 import {ColumnDef,flexRender,getCoreRowModel,useReactTable,} from '@tanstack/react-table'
 import { ContactType } from '../contactType'
-import '../index.css'; 
 
 // Route setup
 export const Route = createFileRoute('/')({

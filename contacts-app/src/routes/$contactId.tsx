@@ -2,7 +2,6 @@ import { useQuery } from '@tanstack/react-query'
 import { createFileRoute, useParams, useNavigate } from '@tanstack/react-router'
 import type { ContactType } from '../contactType'
 import { useState } from 'react'
-import "../index.css"
 
 // Route setup
 export const Route = createFileRoute('/$contactId')({
