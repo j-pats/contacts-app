@@ -19,8 +19,8 @@ function Header() {
       </div>
       <hr />
       <Outlet />
-      <TanStackRouterDevtools />
-      <ReactQueryDevtools/>
+      {/* <TanStackRouterDevtools /> */}
+      {/* <ReactQueryDevtools/> */}
     </>
   )
 }
