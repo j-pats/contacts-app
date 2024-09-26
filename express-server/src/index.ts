@@ -9,6 +9,9 @@ app.use(cors())
 app.use(express.json())
 // import json file
 const jsonFile: { contacts: ContactType[] } = require("../db.json");
+// unique id value for creating new contacts, UUID would be better
+// Initialized to be at the max id value in the contacts json file
+var nextId = 31;
 
 // Get all contacts
 app.get('/contacts', (req: Request, res: Response) => {
@@ -51,9 +54,6 @@ app.put('/:contactId', (req: Request, res: Response) => {
   // Find the contact by ID number
   const index = jsonFile.contacts.findIndex(contact => contact.id == req.params.contactId);
 
-  
-
-
   if (index !== -1) {
     // Update contact data
     jsonFile.contacts[index] = {
@@ -68,6 +68,32 @@ app.put('/:contactId', (req: Request, res: Response) => {
   } else {
     // Error updating contact
     res.status(500).send("Cannot update, contact does not exist")
+  }
+});
+
+// create a new entry
+app.post('/addContact', (req: Request, res: Response) => {
+  // updated info from request body
+  const newContact:ContactType = req.body;
+
+  // get index to create new contact at
+  const index = jsonFile.contacts.length;
+
+  const toAdd:ContactType = {
+    id: nextId.toString(),
+    name: newContact.name,
+    email: newContact.email,
+    phone: newContact.phone,
+  }
+
+  if (toAdd != null && toAdd != undefined) {
+    jsonFile.contacts.push(toAdd)
+    // Send back ok response
+    nextId = nextId + 1;
+    res.status(200).send("Contact added");
+  } else {
+    // Error updating contact
+    res.status(500).send("Error: Cannot add contact")
   }
 });
 

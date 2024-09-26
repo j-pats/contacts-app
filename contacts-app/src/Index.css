@@ -30,7 +30,8 @@ html {
     text-indent: 5px;
   }
 
-  h4 {
+  .menu-header {
+    display:inline-block;
     margin: 5px;
   }
 
@@ -48,6 +49,50 @@ html {
     margin-left: 10px;
     margin-right: 10px;
     margin-top: 20px;
+  }
+
+  .create-button {
+    background-color: #04aa49;
+    border: none;
+    color: white;
+    padding: 10px 20px;
+    text-align: center;
+    display: inline-block;
+    margin-left: 10px;
+    margin-right: 10px;
+    margin-top: 20px;
+  }
+
+  .create-button:disabled {
+    background-color: #a0a0a0;
+    border: none;
+    color: white;
+    padding: 10px 20px;
+    text-align: center;
+    display: inline-block;
+    margin-left: 10px;
+    margin-right: 10px;
+    margin-top: 20px;
+  }
+
+  .add-button {
+    background-color: #04aa49;
+    border: none;
+    color: white;
+    padding: 3px 10px;
+    text-align: center;
+    display: inline-block;
+    margin-left: 15px;
+  }
+
+  .home-button {
+    background-color: #043eaa;
+    border: none;
+    color: white;
+    padding: 3px 10px;
+    text-align: center;
+    display: inline-block;
+    margin-left: 15px;
   }
 
   .focus-update-button {

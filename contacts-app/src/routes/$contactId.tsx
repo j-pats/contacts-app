@@ -70,13 +70,13 @@ function ContactComponent() {
 
   // Initialize JSON data object for sending PUTs data
   const updateData = {"id":contactId,
-    "name":"",
-    "email":"",
-    "phone":""
+    "name":(document.getElementById("nameInput") as HTMLInputElement)?.value,
+    "email":(document.getElementById("emailInput") as HTMLInputElement)?.value,
+    "phone":(document.getElementById("phoneInput") as HTMLInputElement)?.value
   };
 
 
-  // deletes contact and stores response
+  // updates contact information
   const updateContact=(async (id:string)=>{
        // Define the request options for the PUT
    const requestOptions = {
