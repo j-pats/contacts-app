@@ -44,7 +44,10 @@ function ContactComponent() {
   })
   // Loading and error handling
   if (fetchContact.isLoading) return <div>Loading contact...</div>
-  if (fetchContact.error) return <div>Error: {fetchContact.error.message}</div>
+  if (fetchContact.error) {
+    console.error("Get contact failed: ", fetchContact.error.message || fetchContact.error)
+    return <div>Error: {fetchContact.error.message}</div>
+  }
   if (fetchContact.isFetching) return <div>Updating contact...</div>
 
   // Save received contact data
@@ -54,16 +57,26 @@ function ContactComponent() {
   const deleteContact=(async (id:string)=>{
     // Show confirmation window
     if(window.confirm("Are you sure you want to delete this contact?")){
-      // make delete api call
-      const response = await fetch(`http://localhost:3000/${id}`,
-        {method:'DELETE'}
-      )
+      try {
+        // abort controller for aborting failed fetch operations
+        const cont = new AbortController();
+        const timeout = setTimeout(() => cont.abort(), 6000);
+        // make delete api call
+        const response = await fetch(`http://localhost:3000/${id}`,{
+          method:'DELETE',
+          signal:cont.signal
+        })
 
-      if (!response.ok) {
-        throw new Error(`Error: ${response.statusText}`);
-      } else {
-        // Go back to contacts home
-        navigate({to:"/"});
+        clearTimeout(timeout);
+
+        if (!response.ok) {
+          throw new Error(`Server error: ${response.body}`);
+        } else {
+          // Go back to contacts home
+          navigate({to:"/"});
+        }
+      } catch (e:any) {
+        console.error("Delete failed: ", e.message || e)
       }
     }
   })
@@ -78,21 +91,31 @@ function ContactComponent() {
 
   // updates contact information
   const updateContact=(async (id:string)=>{
-       // Define the request options for the PUT
-   const requestOptions = {
-    method: "PUT",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(updateData)
-  };
-    const response = await fetch(`http://localhost:3000/${id}`,
-      requestOptions,
-    )
-    
-    if (!response.ok) {
-      throw new Error(`Error: ${response.statusText}`);
-    } else {
-      // Set useState hook to disable Update button and force Component rerender
-      setIsChanged(false)
+    const cont = new AbortController();
+    const timeout = setTimeout(() => cont.abort(), 6000);
+    // Define the request options for the PUT
+    const requestOptions = {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(updateData),
+      signal:cont.signal
+    };
+
+      try {
+      const response = await fetch(`http://localhost:3000/${id}`, 
+        requestOptions, 
+      )
+
+      clearTimeout(timeout);
+      
+      if (!response.ok) {
+        throw new Error(`Error: ${response.statusText}`);
+      } else {
+        // Set useState hook to disable Update button and force Component rerender
+        setIsChanged(false)
+      }
+    } catch(e:any) {
+      console.error("Update failed: ", e.message || e)
     }
   })
 
